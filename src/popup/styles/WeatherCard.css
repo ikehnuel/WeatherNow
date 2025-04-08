@@ -1,0 +1,31 @@
+.weather-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.weather-card h2 {
+    font-size: 24px;
+    margin: 0;
+    color: #333;
+}
+
+.weather-card p {
+    font-size: 16px;
+    color: #666;
+}
+
+.weather-card .temperature {
+    font-size: 48px;
+    color: #ff5722;
+}
+
+.weather-card .icon {
+    width: 64px;
+    height: 64px;
+}

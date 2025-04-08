@@ -1,0 +1,40 @@
+{
+  "name": "WeatherNow",
+  "version": "1.0.0",
+  "description": "A Chrome extension for a weather dashboard.",
+  "main": "src/index.tsx",
+  "scripts": {
+    "build": "webpack --mode production",
+    "start": "webpack serve --mode development",
+    "test": "jest"
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "weather",
+    "dashboard"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "axios": "^0.21.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^3.11.2",
+    "babel-loader": "^8.2.2",
+    "ts-loader": "^8.0.18",
+    "jest": "^26.6.0",
+    "babel-jest": "^26.6.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-react": "^7.27.0"
+  },
+  "browser": {
+    "src/background/index.ts": "background.js",
+    "src/content/index.tsx": "content.js"
+  }
+}
