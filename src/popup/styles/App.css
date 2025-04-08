@@ -2,18 +2,36 @@
 
 .app {
     width: 320px;
-    min-height: 400px;
+    min-height: 500px;
+    max-height: 600px;
     background-color: var(--background-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
     transition: background-color var(--transition-speed);
+    overflow: hidden;
 }
 
 .main-content {
     padding: var(--spacing-md);
     flex-grow: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-tertiary) transparent;
+}
+
+.main-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+    background-color: var(--text-tertiary);
+    border-radius: 3px;
+}
+
+.main-content::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .loading {
@@ -31,9 +49,54 @@
     color: var(--error-color);
 }
 
+.weather-overview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.animated-icon-container {
+    margin: var(--spacing-sm) 0;
+}
+
+.location-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: var(--spacing-sm) 0 var(--spacing-md);
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.coming-soon {
+    text-align: center;
+    padding: var(--spacing-xl);
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
 /* Add responsive styles for larger views */
 @media (min-width: 480px) {
     .app {
         width: 480px;
+    }
+    
+    .weather-overview {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    
+    .animated-icon-container {
+        flex: 0 0 auto;
+    }
+}
+
+@media (min-width: 768px) {
+    .app {
+        width: 100%;
+        height: 100vh;
+        max-height: none;
+        border-radius: 0;
     }
 }

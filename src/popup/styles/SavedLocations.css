@@ -1,0 +1,64 @@
+.saved-locations {
+  margin: 16px 0;
+  padding: 12px;
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.locations-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.locations-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.location-item {
+  display: flex;
+  align-items: center;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 4px 8px 4px 12px;
+  font-size: 13px;
+}
+
+.location-name {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  margin-right: 4px;
+}
+
+.city {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.country {
+  color: var(--text-tertiary);
+  font-size: 10px;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 4px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-button:hover {
+  color: var(--error-color);
+}
