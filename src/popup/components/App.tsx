@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import WeatherCard from './WeatherCard';
-import SearchBar from './SearchBar';
 import LocationSearch from './LocationSearch';
 import SavedLocations from './SavedLocations';
 import FiveDayForecast from './FiveDayForecast';
@@ -9,10 +8,12 @@ import Settings from './Settings';
 import TrendChart from './TrendChart';
 import AirQuality from './AirQuality';
 import AnimatedWeatherIcon from './AnimatedWeatherIcon';
+import WeatherMap from './WeatherMap';
 import { WeatherProvider, useWeather } from '../context/WeatherContext';
 import { LocationProvider, useLocation } from '../context/LocationContext';
 import { SettingsProvider, useSettings } from '../context/SettingsContext';
 import { applyTheme, listenForThemeChanges } from '../services/themeService';
+import { API_KEY } from '../../constants';
 import '../styles/App.css';
 
 // Tabs for navigation
@@ -55,10 +56,6 @@ const WeatherDisplay: React.FC = () => {
     }
   }, [settings.theme]);
   
-  const handleSearch = (query: string) => {
-    fetchWeatherForCity(query);
-  };
-
   const handleRefresh = () => {
     refreshWeather();
   };
@@ -156,10 +153,28 @@ const WeatherDisplay: React.FC = () => {
       );
     }
     
-    // Map tab will be added later
-    return (
-      <div className="coming-soon">Map view coming soon</div>
-    );
+    if (activeTab === Tab.Map) {
+      return (
+        <>
+          <LocationSearch />
+          
+          {(loading || locationLoading) ? (
+            <div className="loading">Loading map data...</div>
+          ) : weatherData.location.lat && weatherData.location.lon ? (
+            <WeatherMap 
+              location={weatherData.location}
+              apiKey={API_KEY}
+            />
+          ) : (
+            <div className="error-message">
+              Location coordinates not available for map view
+            </div>
+          )}
+        </>
+      );
+    }
+    
+    return null;
   };
   
   // Helper function to determine if it's daytime

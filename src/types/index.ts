@@ -19,6 +19,10 @@ export interface WeatherResponse {
     location: Location;
     current: WeatherData;
     lastUpdated?: string;
+    sys?: {
+        sunrise: number;
+        sunset: number;
+    }
 }
 
 export interface ForecastData {
@@ -41,6 +45,9 @@ export interface HourlyForecast {
     temperature: number;
     description: string;
     icon: string;
+    precipitation?: number; // Probability of precipitation in %
+    humidity?: number;
+    windSpeed?: number;
 }
 
 export interface ApiError {
@@ -52,4 +59,11 @@ export interface UserPreferences {
     temperatureUnit: 'celsius' | 'fahrenheit';
     theme: 'light' | 'dark' | 'system';
     notificationsEnabled: boolean;
+}
+
+export interface NotificationSettings {
+    dailyForecast: boolean;
+    dailyForecastTime: string;
+    severeWeatherAlerts: boolean;
+    precipitationAlerts: boolean;
 }

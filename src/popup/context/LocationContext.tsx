@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { API_KEY } from '../../constants';
 
 export interface Location {
   city: string;
@@ -20,6 +21,8 @@ interface LocationContextType {
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
 
+const GEOCODING_API = 'https://api.openweathermap.org/geo/1.0';
+
 export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null);
   const [savedLocations, setSavedLocations] = useState<Location[]>([]);
@@ -28,9 +31,12 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   // Load saved locations from Chrome storage on mount
   useEffect(() => {
-    chrome.storage.local.get(['savedLocations'], (result) => {
+    chrome.storage.local.get(['savedLocations', 'currentLocation'], (result) => {
       if (result.savedLocations) {
         setSavedLocations(JSON.parse(result.savedLocations));
+      }
+      if (result.currentLocation) {
+        setCurrentLocation(JSON.parse(result.currentLocation));
       }
     });
   }, []);
@@ -41,6 +47,13 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
       chrome.storage.local.set({ savedLocations: JSON.stringify(savedLocations) });
     }
   }, [savedLocations]);
+
+  // Save current location when it changes
+  useEffect(() => {
+    if (currentLocation) {
+      chrome.storage.local.set({ currentLocation: JSON.stringify(currentLocation) });
+    }
+  }, [currentLocation]);
 
   const detectLocation = async (): Promise<void> => {
     if (!navigator.geolocation) {
@@ -53,14 +66,18 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
     try {
       const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
+        navigator.geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        });
       });
       
       const { latitude, longitude } = position.coords;
       
       // Reverse geocoding to get city and country
       const response = await fetch(
-        `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=YOUR_API_KEY`
+        `${GEOCODING_API}/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`
       );
       
       if (!response.ok) {
@@ -77,10 +94,22 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
         
         setCurrentLocation(newLocation);
+        
+        // Add to saved locations if not already there
+        addLocation(newLocation);
+      } else {
+        throw new Error('No location found for these coordinates');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
       console.error('Error detecting location:', err);
+      
+      // If we can't detect location, try to use the last saved location
+      chrome.storage.local.get(['currentLocation'], (result) => {
+        if (result.currentLocation) {
+          setCurrentLocation(JSON.parse(result.currentLocation));
+        }
+      });
     } finally {
       setIsLoading(false);
     }
@@ -89,7 +118,10 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
   const addLocation = (location: Location): void => {
     setSavedLocations(prev => {
       // Check if location already exists to avoid duplicates
-      if (!prev.some(loc => loc.city === location.city && loc.country === location.country)) {
+      if (!prev.some(loc => 
+        loc.city === location.city && 
+        loc.country === location.country
+      )) {
         return [...prev, location];
       }
       return prev;
@@ -98,6 +130,10 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const removeLocation = (locationId: string): void => {
     setSavedLocations(prev => prev.filter(loc => `${loc.city}-${loc.country}` !== locationId));
+  };
+
+  const updateCurrentLocation = (location: Location): void => {
+    setCurrentLocation(location);
   };
 
   return (
@@ -110,7 +146,7 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         detectLocation,
         addLocation,
         removeLocation,
-        setCurrentLocation
+        setCurrentLocation: updateCurrentLocation
       }}
     >
       {children}

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { fetchAirQuality } from '../utils/api';
+import { AQI_LEVELS } from '../../constants';
 import '../styles/AirQuality.css';
 
 interface AirQualityProps {
@@ -25,47 +27,13 @@ const AirQuality: React.FC<AirQualityProps> = ({ lat, lon }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  const API_KEY = 'YOUR_API_KEY'; // Replace with your OpenWeather API key
-  
-  // Get air quality description based on index
-  const getAirQualityDescription = (aqi: number): string => {
-    switch(aqi) {
-      case 1: return 'Good';
-      case 2: return 'Fair';
-      case 3: return 'Moderate';
-      case 4: return 'Poor';
-      case 5: return 'Very Poor';
-      default: return 'Unknown';
-    }
-  };
-  
-  // Get color based on air quality index
-  const getAirQualityColor = (aqi: number): string => {
-    switch(aqi) {
-      case 1: return '#8BC34A'; // Green
-      case 2: return '#CDDC39'; // Lime
-      case 3: return '#FFC107'; // Amber
-      case 4: return '#FF9800'; // Orange
-      case 5: return '#F44336'; // Red
-      default: return '#9E9E9E'; // Grey
-    }
-  };
-  
   useEffect(() => {
-    const fetchAirQuality = async () => {
+    const getAirQuality = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        const response = await fetch(
-          `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
-        );
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch air quality data');
-        }
-        
-        const data = await response.json();
+        const data = await fetchAirQuality(lat, lon);
         setAirQualityData(data.list[0]);
       } catch (err) {
         console.error('Error fetching air quality:', err);
@@ -76,7 +44,7 @@ const AirQuality: React.FC<AirQualityProps> = ({ lat, lon }) => {
     };
     
     if (lat && lon) {
-      fetchAirQuality();
+      getAirQuality();
     }
   }, [lat, lon]);
   
@@ -89,16 +57,15 @@ const AirQuality: React.FC<AirQualityProps> = ({ lat, lon }) => {
   }
 
   const { aqi, components } = airQualityData;
-  const aqiDescription = getAirQualityDescription(aqi);
-  const aqiColor = getAirQualityColor(aqi);
+  const aqiInfo = AQI_LEVELS[aqi as keyof typeof AQI_LEVELS];
 
   return (
     <div className="air-quality-container">
       <h3 className="air-quality-title">Air Quality</h3>
       
-      <div className="aqi-indicator" style={{ backgroundColor: aqiColor }}>
+      <div className="aqi-indicator" style={{ backgroundColor: aqiInfo.color }}>
         <span className="aqi-value">{aqi}</span>
-        <span className="aqi-description">{aqiDescription}</span>
+        <span className="aqi-description">{aqiInfo.name}</span>
       </div>
       
       <div className="pollutants-grid">
@@ -124,15 +91,7 @@ const AirQuality: React.FC<AirQualityProps> = ({ lat, lon }) => {
       </div>
       
       <div className="air-quality-info">
-        <p className="air-quality-tip">
-          {aqi <= 2 ? (
-            'The air quality is good. Enjoy outdoor activities!'
-          ) : aqi === 3 ? (
-            'Moderate air quality. Consider reducing outdoor exercise if you experience symptoms.'
-          ) : (
-            'Poor air quality. Consider limiting outdoor activities.'
-          )}
-        </p>
+        <p className="air-quality-tip">{aqiInfo.description}</p>
       </div>
     </div>
   );
