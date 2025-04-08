@@ -1,5 +1,6 @@
 export const API_KEY = 'YOUR_OPENWEATHER_API_KEY'; // Replace with your actual API key
 export const API_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+export const GEOCODING_API = 'https://api.openweathermap.org/geo/1.0';
 
 export const WEATHER_ICONS = {
   '01d': 'clear-day',
@@ -23,6 +24,7 @@ export const WEATHER_ICONS = {
 };
 
 export const WEATHER_CONDITIONS = {
+  // Group 2xx: Thunderstorm
   200: { description: 'Thunderstorm with light rain', icon: 'thunderstorm' },
   201: { description: 'Thunderstorm with rain', icon: 'thunderstorm' },
   202: { description: 'Thunderstorm with heavy rain', icon: 'thunderstorm' },
@@ -34,6 +36,7 @@ export const WEATHER_CONDITIONS = {
   231: { description: 'Thunderstorm with drizzle', icon: 'thunderstorm' },
   232: { description: 'Thunderstorm with heavy drizzle', icon: 'thunderstorm' },
   
+  // Group 3xx: Drizzle
   300: { description: 'Light intensity drizzle', icon: 'rain' },
   301: { description: 'Drizzle', icon: 'rain' },
   302: { description: 'Heavy intensity drizzle', icon: 'rain' },
@@ -44,29 +47,32 @@ export const WEATHER_CONDITIONS = {
   314: { description: 'Heavy shower rain and drizzle', icon: 'rain' },
   321: { description: 'Shower drizzle', icon: 'rain' },
   
+  // Group 5xx: Rain
   500: { description: 'Light rain', icon: 'rain' },
   501: { description: 'Moderate rain', icon: 'rain' },
   502: { description: 'Heavy intensity rain', icon: 'rain' },
   503: { description: 'Very heavy rain', icon: 'rain' },
   504: { description: 'Extreme rain', icon: 'rain' },
-  511: { description: 'Freezing rain', icon: 'sleet' },
+  511: { description: 'Freezing rain', icon: 'snow' },
   520: { description: 'Light intensity shower rain', icon: 'rain' },
   521: { description: 'Shower rain', icon: 'rain' },
   522: { description: 'Heavy intensity shower rain', icon: 'rain' },
   531: { description: 'Ragged shower rain', icon: 'rain' },
   
+  // Group 6xx: Snow
   600: { description: 'Light snow', icon: 'snow' },
   601: { description: 'Snow', icon: 'snow' },
   602: { description: 'Heavy snow', icon: 'snow' },
-  611: { description: 'Sleet', icon: 'sleet' },
-  612: { description: 'Light shower sleet', icon: 'sleet' },
-  613: { description: 'Shower sleet', icon: 'sleet' },
-  615: { description: 'Light rain and snow', icon: 'sleet' },
-  616: { description: 'Rain and snow', icon: 'sleet' },
+  611: { description: 'Sleet', icon: 'snow' },
+  612: { description: 'Light shower sleet', icon: 'snow' },
+  613: { description: 'Shower sleet', icon: 'snow' },
+  615: { description: 'Light rain and snow', icon: 'snow' },
+  616: { description: 'Rain and snow', icon: 'snow' },
   620: { description: 'Light shower snow', icon: 'snow' },
   621: { description: 'Shower snow', icon: 'snow' },
   622: { description: 'Heavy shower snow', icon: 'snow' },
   
+  // Group 7xx: Atmosphere
   701: { description: 'Mist', icon: 'fog' },
   711: { description: 'Smoke', icon: 'fog' },
   721: { description: 'Haze', icon: 'fog' },
@@ -78,18 +84,21 @@ export const WEATHER_CONDITIONS = {
   771: { description: 'Squalls', icon: 'wind' },
   781: { description: 'Tornado', icon: 'wind' },
   
+  // Group 800: Clear
   800: { description: 'Clear sky', icon: 'clear-day' },
   
-  801: { description: 'Few clouds', icon: 'partly-cloudy-day' },
-  802: { description: 'Scattered clouds', icon: 'partly-cloudy-day' },
-  803: { description: 'Broken clouds', icon: 'cloudy' },
-  804: { description: 'Overcast clouds', icon: 'cloudy' }
+  // Group 80x: Clouds
+  801: { description: 'Few clouds: 11-25%', icon: 'partly-cloudy-day' },
+  802: { description: 'Scattered clouds: 25-50%', icon: 'partly-cloudy-day' },
+  803: { description: 'Broken clouds: 51-84%', icon: 'cloudy' },
+  804: { description: 'Overcast clouds: 85-100%', icon: 'cloudy' }
 };
 
-export const AQI_LEVELS = {
-  1: { name: 'Good', color: '#8BC34A', description: 'Air quality is satisfactory, and air pollution poses little or no risk.' },
-  2: { name: 'Fair', color: '#CDDC39', description: 'Air quality is acceptable; however, some pollutants may be a concern for a very small number of people.' },
-  3: { name: 'Moderate', color: '#FFC107', description: 'Members of sensitive groups may experience health effects. The general public is less likely to be affected.' },
+// Air Quality Index levels based on the European standard
+export const AIR_QUALITY_LEVELS = {
+  1: { name: 'Good', color: '#4CAF50', description: 'Air quality is considered satisfactory, and air pollution poses little or no risk.' },
+  2: { name: 'Fair', color: '#8BC34A', description: 'Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people.' },
+  3: { name: 'Moderate', color: '#FFEB3B', description: 'Members of sensitive groups may experience health effects. The general public is not likely to be affected.' },
   4: { name: 'Poor', color: '#FF9800', description: 'Some members of the general public may experience health effects; members of sensitive groups may experience more serious effects.' },
   5: { name: 'Very Poor', color: '#F44336', description: 'Health alert: The risk of health effects is increased for everyone.' }
 };

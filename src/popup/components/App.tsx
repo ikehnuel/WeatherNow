@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
 import WeatherCard from './WeatherCard';
-import LocationSearch from './LocationSearch';
-import SavedLocations from './SavedLocations';
 import FiveDayForecast from './FiveDayForecast';
 import Settings from './Settings';
 import TrendChart from './TrendChart';
-import AirQuality from './AirQuality';
+import LocationSearch from './LocationSearch';
+import SavedLocations from './SavedLocations';
 import AnimatedWeatherIcon from './AnimatedWeatherIcon';
-import WeatherMap from './WeatherMap';
+import AirQualityIndex from './AirQualityIndex';
 import { WeatherProvider, useWeather } from '../context/WeatherContext';
 import { LocationProvider, useLocation } from '../context/LocationContext';
 import { SettingsProvider, useSettings } from '../context/SettingsContext';
 import { applyTheme, listenForThemeChanges } from '../services/themeService';
-import { API_KEY } from '../../constants';
+import { requestNotificationPermission } from '../services/notificationService';
 import '../styles/App.css';
 
 // Tabs for navigation
 enum Tab {
   Weather = 'weather',
-  Forecast = 'forecast',
-  Map = 'map',
   Settings = 'settings'
 }
 
@@ -37,13 +34,6 @@ const WeatherDisplay: React.FC = () => {
     detectLocation().catch(console.error);
   }, [detectLocation]);
   
-  // Fetch weather when location is detected
-  useEffect(() => {
-    if (currentLocation) {
-      fetchWeatherForCity(currentLocation.city);
-    }
-  }, [currentLocation, fetchWeatherForCity]);
-  
   // Apply theme changes when settings change
   useEffect(() => {
     applyTheme(settings.theme);
@@ -55,6 +45,13 @@ const WeatherDisplay: React.FC = () => {
       });
     }
   }, [settings.theme]);
+  
+  // Request notification permission if enabled
+  useEffect(() => {
+    if (settings.notificationsEnabled) {
+      requestNotificationPermission();
+    }
+  }, [settings.notificationsEnabled]);
   
   const handleRefresh = () => {
     refreshWeather();
@@ -96,9 +93,9 @@ const WeatherDisplay: React.FC = () => {
               <div className="weather-overview">
                 <div className="animated-icon-container">
                   <AnimatedWeatherIcon 
-                    condition={weatherData.current.description}
-                    timeOfDay={isDayTime(weatherData.sys?.sunrise, weatherData.sys?.sunset) ? 'day' : 'night'}
-                    size="large"
+                    condition={weatherData.current.icon.split('@')[0].split('/').pop() || '01d'}
+                    size="large" 
+                    isDayTime={true} // You could determine day/night based on sunrise/sunset times
                   />
                 </div>
                 
@@ -117,58 +114,34 @@ const WeatherDisplay: React.FC = () => {
                   sunset={weatherData.sys?.sunset}
                   lastUpdated={weatherData.lastUpdated}
                 />
+                
+                {/* Air Quality Index */}
+                {weatherData.location.lat && weatherData.location.lon && (
+                  <AirQualityIndex 
+                    lat={weatherData.location.lat} 
+                    lon={weatherData.location.lon} 
+                  />
+                )}
+                
+                <FiveDayForecast city={weatherData.location.city} />
+                
+                {/* We'll add the trend chart when there's hourly data */}
+                {hourlyData.length > 0 && <TrendChart hourlyData={hourlyData} />}
               </div>
               
-              {weatherData.location.lat && weatherData.location.lon && (
-                <AirQuality 
-                  lat={weatherData.location.lat} 
-                  lon={weatherData.location.lon} 
-                />
-              )}
-            </>
-          )}
-        </>
-      );
-    }
-    
-    if (activeTab === Tab.Forecast) {
-      return (
-        <>
-          <LocationSearch />
-          
-          {(loading || locationLoading) ? (
-            <div className="loading">Loading forecast data...</div>
-          ) : (
-            <>
-              <div className="location-title">
-                {weatherData.location.city}, {weatherData.location.country}
+              <div className="refresh-info">
+                <button className="refresh-button-large" onClick={handleRefresh} disabled={loading}>
+                  Refresh Data
+                </button>
+                <div className="last-updated-time">
+                  {weatherData.lastUpdated && (
+                    <span>
+                      Last updated: {new Date(weatherData.lastUpdated).toLocaleTimeString()}
+                    </span>
+                  )}
+                </div>
               </div>
-              
-              <FiveDayForecast city={weatherData.location.city} />
-              
-              {hourlyData.length > 0 && <TrendChart hourlyData={hourlyData} />}
             </>
-          )}
-        </>
-      );
-    }
-    
-    if (activeTab === Tab.Map) {
-      return (
-        <>
-          <LocationSearch />
-          
-          {(loading || locationLoading) ? (
-            <div className="loading">Loading map data...</div>
-          ) : weatherData.location.lat && weatherData.location.lon ? (
-            <WeatherMap 
-              location={weatherData.location}
-              apiKey={API_KEY}
-            />
-          ) : (
-            <div className="error-message">
-              Location coordinates not available for map view
-            </div>
           )}
         </>
       );
@@ -177,24 +150,18 @@ const WeatherDisplay: React.FC = () => {
     return null;
   };
   
-  // Helper function to determine if it's daytime
-  const isDayTime = (sunrise?: number, sunset?: number): boolean => {
-    if (!sunrise || !sunset) return true;
-    const now = Math.floor(Date.now() / 1000); // Current time in seconds
-    return now >= sunrise && now <= sunset;
-  };
-  
   return (
     <div className="app">
-      <Header 
-        onTabChange={(tab) => setActiveTab(tab as Tab)} 
-        activeTab={activeTab}
-        onRefresh={handleRefresh}
-        isLoading={loading}
-      />
+      <Header onTabChange={(tab) => setActiveTab(tab as Tab)} activeTab={activeTab} />
       <main className="main-content">
         {renderContent()}
       </main>
+      <footer className="app-footer">
+        <div className="footer-content">
+          <span>WeatherNow v1.0</span>
+          <span>Powered by OpenWeather</span>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -4,8 +4,8 @@ import { API_KEY } from '../../constants';
 export interface Location {
   city: string;
   country: string;
-  lat: number;
-  lon: number;
+  lat?: number;
+  lon?: number;
 }
 
 interface LocationContextType {
@@ -94,22 +94,14 @@ export const LocationProvider: React.FC<{ children: ReactNode }> = ({ children }
         };
         
         setCurrentLocation(newLocation);
-        
-        // Add to saved locations if not already there
+        // Automatically add to saved locations if not already there
         addLocation(newLocation);
       } else {
-        throw new Error('No location found for these coordinates');
+        throw new Error('No location data returned');
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unknown error occurred');
       console.error('Error detecting location:', err);
-      
-      // If we can't detect location, try to use the last saved location
-      chrome.storage.local.get(['currentLocation'], (result) => {
-        if (result.currentLocation) {
-          setCurrentLocation(JSON.parse(result.currentLocation));
-        }
-      });
     } finally {
       setIsLoading(false);
     }
