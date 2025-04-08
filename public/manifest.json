@@ -5,13 +5,16 @@
   "description": "A Chrome extension for checking the weather.",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "geolocation",
+    "notifications",
+    "alarms"
   ],
   "background": {
-    "service_worker": "background/index.ts"
+    "service_worker": "background.bundle.js"
   },
   "action": {
-    "default_popup": "index.html",
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -26,7 +29,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/index.tsx"]
+      "js": ["content.bundle.js"]
     }
   ]
 }

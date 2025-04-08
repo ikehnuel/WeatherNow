@@ -1,31 +1,34 @@
+@import 'variables.css';
+
 .app {
     width: 320px;
     min-height: 400px;
-    background-color: #f5f7fa;
+    background-color: var(--background-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
+    transition: background-color var(--transition-speed);
 }
 
 .main-content {
-    padding: 16px;
+    padding: var(--spacing-md);
     flex-grow: 1;
 }
 
 .loading {
     text-align: center;
-    padding: 20px;
-    color: #666;
+    padding: var(--spacing-lg);
+    color: var(--text-secondary);
 }
 
 .error-message {
-    background-color: #ffeded;
-    border-left: 4px solid #f44336;
-    padding: 12px;
-    margin: 12px 0;
-    border-radius: 4px;
-    color: #d32f2f;
+    background-color: rgba(244, 67, 54, 0.1);
+    border-left: 4px solid var(--error-color);
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    border-radius: var(--border-radius);
+    color: var(--error-color);
 }
 
 /* Add responsive styles for larger views */

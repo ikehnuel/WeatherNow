@@ -1,0 +1,148 @@
+.forecast-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.forecast-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.day-info {
+  display: flex;
+  flex-direction: column;
+  width: 80px;
+}
+
+.day {
+  font-weight: bold;
+  font-size: 16px;
+  color: #333;
+}
+
+.date {
+  font-size: 12px;
+  color: #666;
+}
+
+.forecast-summary {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.forecast-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.temp-range {
+  display: flex;
+  flex-direction: column;
+  margin-left: 8px;
+  text-align: center;
+}
+
+.high {
+  font-weight: bold;
+  color: #ff5722;
+}
+
+.low {
+  color: #64b5f6;
+}
+
+.precipitation {
+  width: 80px;
+  text-align: right;
+  font-size: 14px;
+  color: #2196f3;
+}
+
+.expand-arrow {
+  margin-left: 16px;
+  font-size: 10px;
+  color: #999;
+  transition: transform 0.3s ease;
+}
+
+.expand-arrow.up {
+  transform: rotate(180deg);
+}
+
+.forecast-card.expanded {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.hourly-forecast {
+  padding: 0 16px 16px;
+  border-top: 1px solid #eee;
+}
+
+.hourly-forecast h4 {
+  margin: 12px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.hourly-list {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.hourly-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 16px;
+  min-width: 60px;
+}
+
+.time {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.hourly-icon {
+  width: 32px;
+  height: 32px;
+  margin: 4px 0;
+}
+
+.temp {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+@media (min-width: 480px) {
+  .forecast-card {
+    margin-bottom: 12px;
+  }
+  
+  .forecast-card-header {
+    padding: 16px 20px;
+  }
+  
+  .day-info {
+    width: 100px;
+  }
+  
+  .day {
+    font-size: 18px;
+  }
+  
+  .forecast-icon {
+    width: 48px;
+    height: 48px;
+  }
+}

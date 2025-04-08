@@ -1,0 +1,44 @@
+.five-day-forecast {
+  margin-top: 24px;
+}
+
+.forecast-title {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+.forecast-cards {
+  display: flex;
+  flex-direction: column;
+}
+
+.forecast-loading,
+.forecast-error,
+.forecast-empty {
+  padding: 16px;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.forecast-loading {
+  color: #666;
+}
+
+.forecast-error {
+  color: #f44336;
+}
+
+.forecast-empty {
+  color: #9e9e9e;
+}
+
+@media (min-width: 768px) {
+  .forecast-title {
+    font-size: 20px;
+  }
+}
